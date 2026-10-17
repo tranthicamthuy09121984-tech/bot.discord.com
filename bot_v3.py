@@ -17,11 +17,11 @@ intents.message_content = True  # Cho phép bot đọc tin nhắn
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 # --------------------------------------
-bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
+bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
 
 # Tải cấu hình từ file .env
 load_dotenv()
-DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
+DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
 GEMINI_API_KEY = os.getenv("AQ.Ab8RN6L36jbJJE6ap7i-YEGwag4thRFzq3GhT8kukGjXrT1nrQ")
 
 # Cấu hình Gemini AI
@@ -125,6 +125,6 @@ async def slash_reset(interaction: discord.Interaction):
 
 if __name__ == "__main__":
     keep_alive()  # Kích hoạt server ngầm giữ bot tỉnh thức
-    bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
+    bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
 # Chạy bot
-bot.run('MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0')
+bot.run('MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI')
