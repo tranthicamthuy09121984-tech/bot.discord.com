@@ -1,130 +1,27 @@
-import os
-import discord
-from discord import app_commands
-from discord.ext import commands
-# from dotenv import load_dotenv
-# load_dotenv()
-import google.generativeai as genai
-from keep_alive import keep_alive
+<div align="center">
 
-# ... (đoạn code khởi tạo bot của ông ở đây)
+# 📑 Tóm tắt cấu trúc file `bot_v3.py`
 
-if __name__ == "__main__":
-    keep_alive() # Giữ bot luôn thức
-    # --- Đoạn cần thêm vào trước bot.run ---
-intents = discord.Intents.default()
-intents.message_content = True  # Cho phép bot đọc tin nhắn
+</div>
 
-bot = commands.Bot(command_prefix="!", intents=intents)
-# --------------------------------------
-bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
+### 1. Khai báo thư viện & Cấu hình AI
+* Nhập các thư viện cần thiết: `os`, `discord`, `app_commands`, `commands`, `google.generativeai` và `keep_alive`.
+* Cấu hình kết nối với **Google Gemini AI** (sử dụng model `gemini-2.5-pro` với độ sáng tạo `temperature=0.7`).
+* Khởi tạo từ điển `user_chats` để lưu trữ phiên trò chuyện riêng biệt (nhớ ngữ cảnh) cho từng người dùng.
 
-# Tải cấu hình từ file .env
-load_dotenv()
-DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
-GEMINI_API_KEY = os.getenv("AQ.Ab8RN6L36jbJJE6ap7i-YEGwag4thRFzq3GhT8kukGjXrT1nrQ")
+### 2. Khởi tạo Discord Bot & Đồng bộ Slash Commands
+* Cấu hình quyền `intents` (cho phép bot đọc nội dung tin nhắn).
+* Xây dựng lớp `ContinuousChatBot` kế thừa từ `commands.Bot` kết hợp hàm `setup_hook()` để tự động đồng bộ hệ thống lệnh gạch chéo (`/`) với Discord.
+* Sự kiện `on_ready()` thông báo trên màn hình console khi bot khởi động thành công.
 
-# Cấu hình Gemini AI
-genai.configure(api_key=AQ.Ab8RN6L36jbJJE6ap7i-YEGwag4thRFzq3GhT8kukGjXrT1nrQ)
-generation_config = {
-    "temperature": 0.7,
-}
-model = genai.GenerativeModel(
-    model_name="gemini-2.5-pro", generation_config=generation_config
-)
+### 3. Hệ thống lệnh Slash Commands (`/`)
+* **/chat [tin_nhan]:** Gửi câu hỏi cho AI, tự động ghi nhớ lịch sử trò chuyện của riêng người dùng đó, và tự động cắt ngắn nếu vượt quá giới hạn 2000 ký tự của Discord.
+* **/reset:** Xóa sạch lịch sử chat cũ của người dùng để bắt đầu một cuộc trò chuyện mới từ đầu.
+* **/ping:** Kiểm tra trạng thái phản hồi nhanh của bot ("Pong! Bot của Nguyên đây.").
 
-# Từ điển lưu trữ phiên chat riêng biệt cho từng người dùng (User ID -> Chat Session)
-user_chats = {}
-
-intents = discord.Intents.default()
-intents.message_content = True
-
-
-class ContinuousChatBot(commands.Bot):
-
-  def __init__(self):
-    super().__init__(command_prefix="!", intents=intents)
-
-  async def setup_hook(self):
-    await self.tree.sync()
-    print("\n[+] Đã đồng bộ xong hệ thống Slash Commands (/)\n")
-
-
-bot = ContinuousChatBot()
-
-
-@bot.event
-async def on_ready():
-  print("\033[92m=======================================================\033[0m")
-  print("\033[92m [+] HỆ THỐNG CHAT LIÊN TỤC (NHỚ NGỮ CẢNH) ĐÃ SẴN SÀNG!\033[0m")
-  print(f" [+] Bot Account: {bot.user} (ID: {bot.user.id})")
-  print("\033[92m=======================================================\033[0m")
-
-
-# --- LỆNH CHAT LIÊN TỤC (Dùng /chat) ---
-@bot.tree.command(
-    name="chat",
-    description="Trò chuyện liên tục với AI (Bot sẽ nhớ các câu hỏi trước đó)",
-)
-@app_commands.describe(tin_nhan="Nội dung bạn muốn nhắn với AI")
-async def slash_chat(interaction: discord.Interaction, tin_nhan: str):
-  await interaction.response.defer(thinking=True)
-
-  try:
-    user_id = interaction.user.id
-
-    # Nếu người này chưa chat trước đó, khởi tạo phiên chat mới
-    if user_id not in user_chats:
-      user_chats[user_id] = model.start_chat(history=[])
-
-    chat_session = user_chats[1532720650542645421]
-
-    # Gửi tin nhắn vào phiên chat (AI tự động nhớ lịch sử cũ)
-    response = chat_session.send_message(tin_nhan)
-    answer = response.text
-
-    # Giới hạn ký tự của Discord (2000 ký tự)
-    if len(answer) > 2000:
-      answer = answer[:1997] + "..."
-
-    await interaction.followup.send(
-        f"👤 **Bạn:** {tin_nhan}\n\n🤖 **Bot:** {answer}"
-    )
-
-  except Exception as e:
-    await interaction.followup.send(
-        f"⚠️ Đã xảy ra lỗi trong quá trình trò chuyện: `{e}`"
-    )
-
-
-# --- LỆNH XÓA BỘ NHỚ (Dùng /reset để bắt đầu câu chuyện mới) ---
-@bot.tree.command(
-    name="reset", description="Xóa lịch sử chat cũ, bắt đầu cuộc trò chuyện mới"
-)
-async def slash_reset(interaction: discord.Interaction):
-  user_id = interaction.user.id
-  if user_id in user_chats:
-    del user_chats[1532720650542645421]
-  await interaction.response.send_message(
-      "🧹 Đã xóa bộ nhớ cũ! Bây giờ chúng ta có thể bắt đầu câu chuyện mới hoàn toàn.",
-      ephemeral=True,
-  )
-
-# --- Ping (Dùng /pong để bot xuất hiện) ---
-@bot.tree.command(
-    name="/ping", description="Dùng /pong để bot xuất hiện"
-)
-async def slash_reset(interaction: discord.Interaction):
-  user_id = interaction.user.id
-  if user_id in user_chats:
-    del user_chats[1532720650542645421]
-  await interaction.response.send_message(
-      "Pong! Bot của Nguyên đây.",
-      ephemeral=True,
- )
-
-if __name__ == "__main__":
-    keep_alive()  # Kích hoạt server ngầm giữ bot tỉnh thức
-    bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
-# Chạy bot
-bot.run('MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI')
+### 4. Khởi chạy ứng dụng (24/7)
+* Kích hoạt hàm `keep_alive()` chạy một web server Flask ngầm trên port `8080`.
+* Gọi `bot.run("TOKEN_DISCORD")` để chính thức đưa bot lên sóng trực tuyến.
+### 5. Kiểm tra phiên bản mới và tự động cập nhật
+* Sau vài ngày, tự động cập nhật Python mới!
+* Run sau khi lưu file.
