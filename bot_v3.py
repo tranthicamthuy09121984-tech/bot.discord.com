@@ -11,7 +11,7 @@ except:
         pass
 
 # Lấy key từ Render Environment - ĐỪNG DÁN THẲNG KEY VÔ ĐÂY
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("AQ.Ab8RN6Lk46aQcy_LKeg9VbwD0x13E4bQ0zbKHv15FTbZBQgkTw"))
 
 model = genai.GenerativeModel(
     model_name="gemini-2.5-flash",
@@ -55,4 +55,4 @@ async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
 
 keep_alive()
-bot.run(os.getenv("DISCORD_TOKEN"))
+bot.run(os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI"))
