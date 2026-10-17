@@ -1,7 +1,5 @@
 # 📑 Tóm tắt cấu trúc file `bot_v3.py`
 
-</div>
-
 ### 1. Khai báo thư viện & Cấu hình AI
 * Nhập các thư viện cần thiết: `os`, `discord`, `app_commands`, `commands`, `google.generativeai` và `keep_alive`.
 * Cấu hình kết nối với **Google Gemini AI** (sử dụng model `gemini-2.5-pro` với độ sáng tạo `temperature=0.7`).
