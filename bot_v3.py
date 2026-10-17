@@ -1,5 +1,3 @@
-<div align="center">
-
 # 📑 Tóm tắt cấu trúc file `bot_v3.py`
 
 </div>
