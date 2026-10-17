@@ -11,6 +11,12 @@ from keep_alive import keep_alive
 
 if __name__ == "__main__":
     keep_alive() # Giữ bot luôn thức
+    # --- Đoạn cần thêm vào trước bot.run ---
+intents = discord.Intents.default()
+intents.message_content = True  # Cho phép bot đọc tin nhắn
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+# --------------------------------------
     bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
 
 # Tải cấu hình từ file .env
