@@ -4,19 +4,26 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 import google.generativeai as genai
+from keep_alive import keep_alive
+
+# ... (đoạn code khởi tạo bot của ông ở đây)
+
+if __name__ == "__main__":
+    keep_alive() # Giữ bot luôn thức
+    bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
 
 # Tải cấu hình từ file .env
 load_dotenv()
-DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
+GEMINI_API_KEY = os.getenv("AQ.Ab8RN6I-pItXQRS2eqXL3jSQH2qE0DBjPc2PxklItkmyE-AsUA")
 
 # Cấu hình Gemini AI
-genai.configure(api_key=GEMINI_API_KEY)
+genai.configure(api_key=AQ.Ab8RN6I-pItXQRS2eqXL3jSQH2qE0DBjPc2PxklItkmyE-AsUA)
 generation_config = {
     "temperature": 0.7,
 }
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash", generation_config=generation_config
+    model_name="gemini-2.5-pro", generation_config=generation_config
 )
 
 # Từ điển lưu trữ phiên chat riêng biệt cho từng người dùng (User ID -> Chat Session)
@@ -63,7 +70,7 @@ async def slash_chat(interaction: discord.Interaction, tin_nhan: str):
     if user_id not in user_chats:
       user_chats[user_id] = model.start_chat(history=[])
 
-    chat_session = user_chats[user_id]
+    chat_session = user_chats[1532720650542645421]
 
     # Gửi tin nhắn vào phiên chat (AI tự động nhớ lịch sử cũ)
     response = chat_session.send_message(tin_nhan)
@@ -90,13 +97,27 @@ async def slash_chat(interaction: discord.Interaction, tin_nhan: str):
 async def slash_reset(interaction: discord.Interaction):
   user_id = interaction.user.id
   if user_id in user_chats:
-    del user_chats[user_id]
+    del user_chats[1532720650542645421]
   await interaction.response.send_message(
-      "🧹 Đã xóa bộ nhớ cũ! Bây giờ chúng ta có thể bắt đầu câu chuyện mới hoàn"
-      " toàn.",
+      "🧹 Đã xóa bộ nhớ cũ! Bây giờ chúng ta có thể bắt đầu câu chuyện mới hoàn toàn."
       ephemeral=True,
   )
 
+# --- Ping (Dùng /pong để bot xuất hiện) ---
+@bot.tree.command(
+    name="/ping", description="Dùng /pong để bot xuất hiện"
+)
+async def slash_reset(interaction: discord.Interaction):
+  user_id = interaction.user.id
+  if user_id in user_chats:
+    del user_chats[1532720650542645421]
+  await interaction.response.send_message(
+      "Pong! Bot của Nguyên đây.",
+      ephemeral=True,
+ )
 
+if __name__ == "__main__":
+    keep_alive()  # Kích hoạt server ngầm giữ bot tỉnh thức
+    bot.run("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
 # Chạy bot
-bot.run(DISCORD_TOKEN)
+bot.run('MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0')
