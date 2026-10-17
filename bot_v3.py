@@ -1,3 +1,9 @@
+import os
+import discord
+from discord import app_commands
+from discord.ext import commands
+import google.generativeai
+from keep_alive import keep_alive
 # 📑 Tóm tắt cấu trúc file `bot_v3.py`
 
 ### 1. Khai báo thư viện & Cấu hình AI
