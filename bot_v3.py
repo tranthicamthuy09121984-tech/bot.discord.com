@@ -15,10 +15,10 @@ if __name__ == "__main__":
 # Tải cấu hình từ file .env
 load_dotenv()
 DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.G7Affi.pbthLO1YTnj8CoLk7BvRmJLfl8e_SePsSY94y0")
-GEMINI_API_KEY = os.getenv("AQ.Ab8RN6I-pItXQRS2eqXL3jSQH2qE0DBjPc2PxklItkmyE-AsUA")
+GEMINI_API_KEY = os.getenv("AQ.Ab8RN6L36jbJJE6ap7i-YEGwag4thRFzq3GhT8kukGjXrT1nrQ")
 
 # Cấu hình Gemini AI
-genai.configure(api_key=AQ.Ab8RN6I-pItXQRS2eqXL3jSQH2qE0DBjPc2PxklItkmyE-AsUA)
+genai.configure(api_key=AQ.Ab8RN6L36jbJJE6ap7i-YEGwag4thRFzq3GhT8kukGjXrT1nrQ)
 generation_config = {
     "temperature": 0.7,
 }
@@ -99,7 +99,7 @@ async def slash_reset(interaction: discord.Interaction):
   if user_id in user_chats:
     del user_chats[1532720650542645421]
   await interaction.response.send_message(
-      "🧹 Đã xóa bộ nhớ cũ! Bây giờ chúng ta có thể bắt đầu câu chuyện mới hoàn toàn."
+      "🧹 Đã xóa bộ nhớ cũ! Bây giờ chúng ta có thể bắt đầu câu chuyện mới hoàn toàn.",
       ephemeral=True,
   )
 
