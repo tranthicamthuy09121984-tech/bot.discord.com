@@ -1,4 +1,3 @@
-text
    discord.py
    flask
    google-generativeai
