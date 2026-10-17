@@ -3,27 +3,74 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 import google.generativeai
-from keep_alive import keep_alive
-# 📑 Tóm tắt cấu trúc file `bot_v3.py`
 
-### 1. Khai báo thư viện & Cấu hình AI
-* Nhập các thư viện cần thiết: `os`, `discord`, `app_commands`, `commands`, `google.generativeai` và `keep_alive`.
-* Cấu hình kết nối với **Google Gemini AI** (sử dụng model `gemini-2.5-pro` với độ sáng tạo `temperature=0.7`).
-* Khởi tạo từ điển `user_chats` để lưu trữ phiên trò chuyện riêng biệt (nhớ ngữ cảnh) cho từng người dùng.
+# import keep_alive, nếu không có file này trên Render thì xóa dòng này đi
+try:
+    from keep_alive import keep_alive
+except:
+    def keep_alive():
+        pass
 
-### 2. Khởi tạo Discord Bot & Đồng bộ Slash Commands
-* Cấu hình quyền `intents` (cho phép bot đọc nội dung tin nhắn).
-* Xây dựng lớp `ContinuousChatBot` kế thừa từ `commands.Bot` kết hợp hàm `setup_hook()` để tự động đồng bộ hệ thống lệnh gạch chéo (`/`) với Discord.
-* Sự kiện `on_ready()` thông báo trên màn hình console khi bot khởi động thành công.
+# --- 1. Cấu hình AI ---
+GOOGLE_API_KEY = os.getenv("AQ.Ab8RN6Lk46aQcy_LKeg9VbwD0x13E4bQ0zbKHv15FTbZBQgkTw")
+DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
 
-### 3. Hệ thống lệnh Slash Commands (`/`)
-* **/chat [tin_nhan]:** Gửi câu hỏi cho AI, tự động ghi nhớ lịch sử trò chuyện của riêng người dùng đó, và tự động cắt ngắn nếu vượt quá giới hạn 2000 ký tự của Discord.
-* **/reset:** Xóa sạch lịch sử chat cũ của người dùng để bắt đầu một cuộc trò chuyện mới từ đầu.
-* **/ping:** Kiểm tra trạng thái phản hồi nhanh của bot ("Pong! Bot của Nguyên đây.").
+genai.configure(api_key=AQ.Ab8RN6Lk46aQcy_LKeg9VbwD0x13E4bQ0zbKHv15FTbZBQgkTw)
+model = genai.GenerativeModel(
+    model_name="gemini-2.5-pro",
+    generation_config={"temperature": 0.7}
+)
 
-### 4. Khởi chạy ứng dụng (24/7)
-* Kích hoạt hàm `keep_alive()` chạy một web server Flask ngầm trên port `8080`.
-* Gọi `bot.run("TOKEN_DISCORD")` để chính thức đưa bot lên sóng trực tuyến.
-### 5. Kiểm tra phiên bản mới và tự động cập nhật
-* Sau vài ngày, tự động cập nhật Python mới!
-* Run sau khi lưu file.
+user_chats = {} # Lưu lịch sử chat riêng cho từng người
+
+# --- 2. Khởi tạo Bot ---
+intents = discord.Intents.default()
+intents.message_content = True
+
+class ContinuousChatBot(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix="!", intents=intents)
+
+    async def setup_hook(self):
+        await self.tree.sync()
+        print("Đã đồng bộ Slash Commands!")
+
+bot = ContinuousChatBot()
+
+@bot.event
+async def on_ready():
+    print(f"Bot của Nguyên đã online! {bot.user}")
+
+# --- 3. Lệnh Slash ---
+@bot.tree.command(name="chat", description="Chat với AI Gemini")
+async def chat(interaction: discord.Interaction, tin_nhan: str):
+    await interaction.response.defer()
+    user_id = str(interaction.user.id)
+    
+    if user_id not in user_chats:
+        user_chats[1532720650542645421] = model.start_chat(history=[])
+    
+    try:
+        response = user_chats[1532720650542645421].send_message(tin_nhan)
+        text = response.text
+        # Cắt ngắn nếu quá 2000 ký tự
+        if len(text) > 2000:
+            text = text[:1997] + "..."
+        await interaction.followup.send(text)
+    except Exception as e:
+        await interaction.followup.send(f"Lỗi: {e}")
+
+@bot.tree.command(name="reset", description="Xóa lịch sử chat")
+async def reset(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    if user_id in user_chats:
+        del user_chats[1532720650542645421]
+    await interaction.response.send_message("Đã xóa lịch sử chat, bắt đầu lại nhé!", ephemeral=True)
+
+@bot.tree.command(name="ping", description="Kiểm tra bot")
+async def ping(interaction: discord.Interaction):
+    await interaction.response.send_message(f"Pong! Bot của Nguyên đây. Ping: {round(bot.latency*1000)}ms")
+
+# --- 4. Chạy 24/7 ---
+keep_alive()
+bot.run(MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI)
