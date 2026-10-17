@@ -55,4 +55,4 @@ async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
 
 keep_alive()
-bot.run(os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI"))
+bot.run(os.getenv("DISCORD_TOKEN"))
