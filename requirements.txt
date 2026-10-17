@@ -1,5 +1,4 @@
-```text
+text
    discord.py
    flask
    google-generativeai
-   ```
