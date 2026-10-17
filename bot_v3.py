@@ -15,7 +15,7 @@ except:
 GOOGLE_API_KEY = os.getenv("AQ.Ab8RN6Lk46aQcy_LKeg9VbwD0x13E4bQ0zbKHv15FTbZBQgkTw")
 DISCORD_TOKEN = os.getenv("MTUzMjcyMDY1MDU0MjY0NTQyMQ.GWYd9y.D-O_43NdKsOozcGoh1Vvnd9OLyAPcTqUaPBgBI")
 
-genai.configure(api_key=AQ.Ab8RN6Lk46aQcy_LKeg9VbwD0x13E4bQ0zbKHv15FTbZBQgkTw)
+genai.configure(api_key="AQ.Ab8RN6Lk46aQcy_LKeg9VbwD0x13E4bQ0zbKHv15FTbZBQgkTw")
 model = genai.GenerativeModel(
     model_name="gemini-2.5-pro",
     generation_config={"temperature": 0.7}
