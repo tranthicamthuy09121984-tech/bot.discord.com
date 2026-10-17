@@ -1,3 +1,5 @@
-discord.py
-flask
-google-genai
+```text
+   discord.py
+   flask
+   google-generativeai
+   ```
