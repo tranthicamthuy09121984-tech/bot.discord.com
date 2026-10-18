@@ -28,7 +28,7 @@ async def chat(interaction: discord.Interaction, tin_nhan: str):
     res = user_chats[uid].send_message(tin_nhan)
     await interaction.followup.send(res.text[:2000])
 
-@bot.tree.command(name="reset", description="Xoa lich su")
+@bot.tree.command(name="reset", description="Xóa lịch sử")
 async def reset(interaction: discord.Interaction):
     user_chats.pop(str(interaction.user.id), None)
     await interaction.response.send_message("Da reset!", ephemeral=True)
@@ -37,9 +37,9 @@ async def reset(interaction: discord.Interaction):
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
 
-@bot.tree.command(name="help", description="Xem cac lenh")
+@bot.tree.command(name="help", description="Xem các lệnh")
 async def help_cmd(interaction: discord.Interaction):
-    embed = discord.Embed(title="URobot - Danh sach lenh", color=0x00ff00)
+    embed = discord.Embed(title="URobot - Danh sách lệnh", color=0x00ff00)
     embed.add_field(name="/chat [tin nhắn]", value="Chat với Gemini AI", inline=False)
     embed.add_field(name="/weather [thành phố]", value="Xem thời tiết. VD: Ho Chi Minh", inline=False)
     embed.add_field(name="/ping", value="Kiem tra do tre", inline=False)
@@ -47,7 +47,7 @@ async def help_cmd(interaction: discord.Interaction):
     embed.add_field(name="/help", value="Hien bang nay", inline=False)
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="weather", description="Xem thoi tiet")
+@bot.tree.command(name="weather", description="Xem thời tiết")
 async def weather(interaction: discord.Interaction, thanh_pho: str):
     await interaction.response.defer()
     try:
