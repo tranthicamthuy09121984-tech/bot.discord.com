@@ -39,12 +39,12 @@ async def ping(interaction: discord.Interaction):
 
 @bot.tree.command(name="help", description="Xem các lệnh")
 async def help_cmd(interaction: discord.Interaction):
-    embed = discord.Embed(title="URobot - Danh sách lệnh", color=0x00ff00)
+    embed = discord.Embed(title="SpaceNguyez - Danh sách lệnh", color=0x00ff00)
     embed.add_field(name="/chat [tin nhắn]", value="Chat với Gemini AI", inline=False)
     embed.add_field(name="/weather [thành phố]", value="Xem thời tiết. VD: Ho Chi Minh", inline=False)
     embed.add_field(name="/ping", value="Kiểm tra độ trễ", inline=False)
     embed.add_field(name="/reset", value="Xóa lịch sử chat", inline=False)
-    embed.add_field(name="/help", value="Hien bang nay", inline=False)
+    embed.add_field(name="/help", value="Hiện bảng này", inline=False)
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="weather", description="Xem thời tiết")
@@ -55,7 +55,7 @@ async def weather(interaction: discord.Interaction, thanh_pho: str):
             async with session.get(f"https://wttr.in/{thanh_pho}?format=j1") as r:
                 data = await r.json()
                 cur = data['current_condition'][0]
-                await interaction.followup.send(f"**Thoi tiet {thanh_pho}:** {cur['weatherDesc'][0]['value']} - {cur['temp_C']}°C (cam giac {cur['FeelsLikeC']}°C)")
+                await interaction.followup.send(f"**Thời tiết {thanh_pho}:** {cur['weatherDesc'][0]['value']} - {cur['temp_C']}°C (cam giac {cur['FeelsLikeC']}°C)")
     except:
         await interaction.followup.send(f"Không tìm thấy {thanh_pho} 😢")
 
