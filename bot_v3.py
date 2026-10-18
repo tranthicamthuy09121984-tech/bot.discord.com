@@ -33,7 +33,7 @@ async def reset(interaction: discord.Interaction):
     user_chats.pop(str(interaction.user.id), None)
     await interaction.response.send_message("Da reset!", ephemeral=True)
 
-@bot.tree.command(name="ping", description="Kiem tra bot")
+@bot.tree.command(name="ping", description="Kiểm tra độ trễ")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
 
@@ -42,8 +42,8 @@ async def help_cmd(interaction: discord.Interaction):
     embed = discord.Embed(title="URobot - Danh sách lệnh", color=0x00ff00)
     embed.add_field(name="/chat [tin nhắn]", value="Chat với Gemini AI", inline=False)
     embed.add_field(name="/weather [thành phố]", value="Xem thời tiết. VD: Ho Chi Minh", inline=False)
-    embed.add_field(name="/ping", value="Kiem tra do tre", inline=False)
-    embed.add_field(name="/reset", value="Xoa lich su chat", inline=False)
+    embed.add_field(name="/ping", value="Kiểm tra độ trễ", inline=False)
+    embed.add_field(name="/reset", value="Xóa lịch sử chat", inline=False)
     embed.add_field(name="/help", value="Hien bang nay", inline=False)
     await interaction.response.send_message(embed=embed)
 
@@ -57,7 +57,7 @@ async def weather(interaction: discord.Interaction, thanh_pho: str):
                 cur = data['current_condition'][0]
                 await interaction.followup.send(f"**Thoi tiet {thanh_pho}:** {cur['weatherDesc'][0]['value']} - {cur['temp_C']}°C (cam giac {cur['FeelsLikeC']}°C)")
     except:
-        await interaction.followup.send(f"Khong tim thay {thanh_pho} 😢")
+        await interaction.followup.send(f"Không tìm thấy {thanh_pho} 😢")
 
 keep_alive()
 bot.run(os.getenv("DISCORD_TOKEN"))
