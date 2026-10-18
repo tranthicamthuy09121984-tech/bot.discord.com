@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import google.generativeai as genai
 import aiohttp
+from typing import Optional
 
 try:
     from keep_alive import keep_alive
@@ -98,16 +99,31 @@ async def help_cmd(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="weather", description="Xem thời tiết")
-async def weather(interaction: discord.Interaction, thanh_pho: str):
+async def weather(
+    interaction: discord.Interaction, 
+    thanh_pho: str, 
+    phuong: Optional[str] = None, 
+    xa: Optional[str] = None, 
+    tinh: Optional[str] = None
+):
     await interaction.response.defer()
     try:
+        # Gộp lại thành 1 địa chỉ duy nhất
+        # VD: Ho Chi Minh + Quan 1 + Ben Nghe
+        parts = [thanh_pho]
+        if phuong: parts.append(phuong)
+        if xa: parts.append(xa)
+        if tinh: parts.append(tinh)
+        
+        dia_chi = ",".join(parts)
+        hien_thi = ", ".join(parts)
+
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://wttr.in/{thanh_pho}?format=j1") as r:
+            async with session.get(f"https://wttr.in/{dia_chi}?format=j1") as r:
                 data = await r.json()
                 cur = data['current_condition'][0]
-                await interaction.followup.send(f"**Thời tiết {thanh_pho}:** {cur['weatherDesc'][0]['value']} - {cur['temp_C']}°C (cảm giác {cur['FeelsLikeC']}°C)")
-    except:
-        await interaction.followup.send(f"Không tìm thấy {thanh_pho} 😢")
-
-keep_alive()
-bot.run(os.getenv("DISCORD_TOKEN"))
+                await interaction.followup.send(
+                    f"**Thời tiết {hien_thi}:** {cur['weatherDesc'][0]['value']} - {cur['temp_C']}°C (cảm giác {cur['FeelsLikeC']}°C)"
+                )
+    except Exception as e:
+        await interaction.followup.send(f"Không tìm thấy {hien_thi} 😢 Lỗi: {e}")
