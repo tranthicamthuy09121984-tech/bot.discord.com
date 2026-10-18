@@ -43,6 +43,17 @@ async def reset(interaction: discord.Interaction):
     user_chats.pop(str(interaction.user.id), None)
     await interaction.response.send_message("Đã reset!", ephemeral=True)
 
+@bot.tree.command(name="mxh", description="Mạng xã hội")
+async def mxh(interaction: discord.Interaction):
+    embed = discord.Embed(title="SpaceNguyez - Mạng xã hội", color=0x00ff00)
+    embed.add_field(name="Thread", value="phcnguyez.info", inline=False)
+    embed.add_field(name="Youtube", value="Nguyez FF™", inline=False)
+    embed.add_field(name="Zalo", value="0931834652", inline=False)
+    embed.add_field(name="Instagram", value="phcnguyez.info", inline=False)
+    embed.add_field(name="Facebook", value="Nguyên Phuc Nguyên", inline=False)
+    embed.add_field(name="Tiktok", value="phcnguyez.com", inline=False)
+    await interaction.response.send_message(embed=embed)
+
 @bot.tree.command(name="ping", description="Kiểm tra độ trễ")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
@@ -86,55 +97,16 @@ async def ptb2(interaction: discord.Interaction, a: float, b: float, c: float):
     except Exception as e:
         await interaction.followup.send(f"Lỗi rồi sen ơi: {e}")
 
-@bot.tree.command(name="help", description="Xem các lệnh")
-async def help_cmd(interaction: discord.Interaction):
-    embed = discord.Embed(title="SpaceNguyez - Danh sách lệnh", color=0x00ff00)
-    embed.add_field(name="/chat [tin nhắn]", value="Chat với Gemini AI", inline=False)
-    embed.add_field(name="/toan [phép tính]", value="VD: 2x3, 10:2", inline=False)
-    embed.add_field(name="/ptb2 [a] [b] [c]", value="Giải ax²+bx+c=0", inline=False)
-    embed.add_field(name="/weather [thành phố]", value="Xem thời tiết", inline=False)
-    embed.add_field(name="/ping", value="Kiểm tra độ trễ", inline=False)
-    embed.add_field(name="/reset", value="Xóa lịch sử chat", inline=False)
-    embed.add_field(name="/help", value="Hiện bảng này", inline=False)
-    await interaction.response.send_message(embed=embed)
-
-try:
-    from keep_alive import keep_alive
-except:
-    def keep_alive(): pass
-
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-user_chats = {}
-intents = discord.Intents.default()
-intents.message_content = True
-
-class ContinuousChatBot(commands.Bot):
-    def __init__(self):
-        super().__init__(command_prefix="!", intents=intents)
-    async def setup_hook(self):
-        await self.tree.sync()
-
-bot = ContinuousChatBot()
-
-@bot.event
-async def on_ready():
-    print(f"Bot online: {bot.user}")
-
 @bot.tree.command(name="weather", description="Xem thời tiết chi tiết phường xã")
 async def weather(interaction: discord.Interaction, thanh_pho: str, phuong: Optional[str] = None, xa: Optional[str] = None, tinh: Optional[str] = None):
     await interaction.response.defer()
     try:
-        # Tạo địa chỉ: Thành phố, Phường, Xã, Tỉnh
         dia_diem_list = [thanh_pho]
         if phuong: dia_diem_list.append(phuong)
         if xa: dia_diem_list.append(xa)
         if tinh: dia_diem_list.append(tinh)
-        
-        # wttr.in hiểu kiểu "Ho Chi Minh, Quan 1"
         query = ",".join(dia_diem_list)
         hien_thi = ", ".join(dia_diem_list)
-
         async with aiohttp.ClientSession() as session:
             async with session.get(f"https://wttr.in/{query}?format=j1") as r:
                 data = await r.json()
@@ -142,16 +114,24 @@ async def weather(interaction: discord.Interaction, thanh_pho: str, phuong: Opti
                 desc = cur['weatherDesc'][0]['value']
                 temp = cur['temp_C']
                 feel = cur['FeelsLikeC']
-                
                 embed = discord.Embed(title=f"Thời tiết {hien_thi}", color=0x00ff99)
                 embed.add_field(name="Trạng thái", value=desc, inline=False)
                 embed.add_field(name="Nhiệt độ", value=f"{temp}°C (cảm giác {feel}°C)", inline=False)
-                
                 await interaction.followup.send(embed=embed)
     except Exception as e:
-        await interaction.followup.send(f"Không tìm thấy {query} 😢")
+        await interaction.followup.send(f"Không tìm thấy {query} 😢 Lỗi: {e}")
 
-# ... các lệnh khác /toan /ptb2 /chat /ping /help giữ nguyên bản cũ anh gửi ...
+@bot.tree.command(name="help", description="Xem các lệnh")
+async def help_cmd(interaction: discord.Interaction):
+    embed = discord.Embed(title="SpaceNguyez - Danh sách lệnh", color=0x00ff00)
+    embed.add_field(name="/chat [tin nhắn]", value="Chat với Gemini AI", inline=False)
+    embed.add_field(name="/toan [phép tính]", value="VD: 2x3, 10:2", inline=False)
+    embed.add_field(name="/ptb2 [a] [b] [c]", value="Giải ax²+bx+c=0", inline=False)
+    embed.add_field(name="/weather [thành phố]", value="Xem thời tiết + phường xã", inline=False)
+    embed.add_field(name="/mxh", value="Mạng xã hội SpaceNguyez", inline=False)
+    embed.add_field(name="/ping", value="Kiểm tra độ trễ", inline=False)
+    embed.add_field(name="/reset", value="Xóa lịch sử chat", inline=False)
+    await interaction.response.send_message(embed=embed)
 
 keep_alive()
 bot.run(os.getenv("DISCORD_TOKEN"))
