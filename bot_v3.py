@@ -163,5 +163,47 @@ async def reset(interaction: discord.Interaction):
         del user_chats[uid]
     await interaction.response.send_message("Đã reset!")
 
+@bot.tree.command(name="gift_code", description="Gift Code!!")
+async def gift_code(interaction: discord.Interaction, giftcode: str):
+    code = giftcode.lower().strip()
+    
+    if code == "item_may_man":
+        embed = discord.Embed(
+            title="🎉 Gift Code Thành Công!",
+            description="**Meo iuu** đã tặng bạn 100 item may mắn!🍀",
+            color=0xFFD700
+        )
+        await interaction.response.send_message(embed=embed)
+
+    elif code == "meo_may_man":
+        embed = discord.Embed(
+            title="🎉 Gift Code Thành Công!",
+            description="**Meo iuu** đã tặng bạn 100 con Mèo may mắn!🍀",
+            color=0xFFD700
+        )
+        await interaction.response.send_message(embed=embed)
+
+    elif code == "vvip_10":
+        embed = discord.Embed(
+            title="🎉 Gift Code Thành Công!",
+            description="**Meo iuu** đã tặng bạn vvip 10, wao!🍀",
+            color=0xFFD700
+        )
+        await interaction.response.send_message(embed=embed)
+
+    elif code == "cho_vang":
+        embed = discord.Embed(
+            title="🎉 Gift Code Thành Công!",
+            description="**Meo iuu** đã tặng bạn 100 con Chó vàng!🍀",
+            color=0xFFD700
+        )
+        await interaction.response.send_message(embed=embed)
+
+    else:
+        await interaction.response.send_message(f"❌ Code `{giftcode}` sai rồi Sen ơi! Code đúng là: `item_may_man`, `meo_may_man`, `vvip_10`, `cho_vang`", ephemeral=True)
+        await interaction.response.send_message(embed=embed)
+    else:
+        await interaction.response.send_message(f"❌ Code `{giftcode}` không đúng rồi Sen ơi! Thử lại `meo_may_man` đi!", ephemeral=True)
+
 keep_alive()
 bot.run(os.getenv("DISCORD_TOKEN"))
