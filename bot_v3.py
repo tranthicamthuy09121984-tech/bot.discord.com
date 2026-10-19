@@ -1,4 +1,5 @@
 import os, math, urllib.parse
+from keep_alive import keep_alive
 import discord
 from discord.ext import commands
 from google import genai
