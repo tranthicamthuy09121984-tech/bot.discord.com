@@ -98,22 +98,31 @@ async def weather(interaction: discord.Interaction, thanh_pho: str, phuong: Opti
     await interaction.response.defer()
     query_goc = ", ".join([x for x in [thanh_pho, phuong, xa, tinh] if x])
     try:
-        query_khong_dau = bo_dau(query_goc)
-        query = urllib.parse.quote(query_khong_dau)
+        # Dùng wttr.in cho API, chuẩn 100%
+        query_url = urllib.parse.quote(query_goc)
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://wttr.in/{query}?format=j1") as r:
-                text = await r.text()
-                if "Unknown location" in text:
-                    raise Exception("Unknown location")
-                data = await r.json(content_type=None)
-                cur = data['current_condition'][0]
-                embed = discord.Embed(title=f"Thời tiết {query_goc}", color=0x00ff99)
-                embed.add_field(name="Trạng thái", value=cur['weatherDesc'][0]['value'], inline=False)
-                embed.add_field(name="Nhiệt độ", value=f"{cur['temp_C']}°C (cảm giác {cur['FeelsLikeC']}°C)", inline=False)
-                embed.add_field(name="Độ ẩm", value=f"{cur['humidity']}%", inline=False)
-                await interaction.followup.send(embed=embed)
+            async with session.get(f"https://wttr.in/{query_url}?format=j1") as r:
+                data = await r.json()
+        
+        if 'current_condition' not in data:
+            raise Exception("Không tìm thấy địa điểm")
+
+        cur = data['current_condition'][0]
+        area = data.get('nearest_area', [{}])[0]
+        area_name = area.get('areaName', [{}])[0].get('value', query_goc) if area else query_goc
+
+        # Link MSN chuẩn mà Sen muốn
+        msn_link = f"https://www.msn.com/vi-vn/weather/forecast/in-{query_url}"
+
+        embed = discord.Embed(title=f"Thời tiết {area_name} - {query_goc}", color=0x00ff99, url=msn_link)
+        embed.add_field(name="☁️ Trạng thái", value=cur['weatherDesc'][0]['value'], inline=False)
+        embed.add_field(name="🌡️ Nhiệt độ", value=f"{cur['temp_C']}°C (cảm giác như {cur['FeelsLikeC']}°C)", inline=True)
+        embed.add_field(name="💧 Độ ẩm", value=f"{cur['humidity']}%", inline=True)
+        embed.add_field(name="💨 Gió", value=f"{cur['windspeedKmph']} km/h", inline=True)
+        embed.add_field(name="🔗 Chi tiết MSN", value=f"[Xem trên MSN]({msn_link})", inline=False)
+        await interaction.followup.send(embed=embed)
     except Exception as e:
-        await interaction.followup.send(f"Không tìm thấy {query_goc} 😢 Thử: Ho Chi Minh | Lỗi: {e}")
+        await interaction.followup.send(f"Không tìm thấy **{query_goc}** 😢 Thử lại: `Ho Chi Minh, Quan 1` | Lỗi: {e}")
 
 @bot.tree.command(name="mxh", description="Tìm mạng xã hội")
 async def mxh(interaction: discord.Interaction, tu_khoa: str):
@@ -123,6 +132,23 @@ async def mxh(interaction: discord.Interaction, tu_khoa: str):
 @bot.tree.command(name="ping", description="Check ping bot")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
+
+@bot.tree.command(name="msn", description="Truy cập trang web MSN")
+async def msn(interaction: discord.Interaction):
+    # Tạo nút bấm link cho chắc chắn
+    view = discord.ui.View()
+    view.add_item(discord.ui.Button(label="Mở MSN Weather", url="https://www.msn.com/vi-vn/weather", emoji="🌤️"))
+    view.add_item(discord.ui.Button(label="Mở MSN Chính", url="https://www.msn.com/vi-vn", emoji="🌐"))
+
+    embed = discord.Embed(
+        title="MSN - Weather",
+        description="Bấm nút bên dưới để truy cập trang web MSN chính thức!",
+        color=0x00ff99
+    )
+    embed.add_field(name="Link", value="https://www.msn.com/vi-vn/weather", inline=False)
+    
+    await interaction.response.send_message(embed=embed, view=view)
+
 
 @bot.tree.command(name="help", description="Hướng dẫn")
 async def help_cmd(interaction: discord.Interaction):
