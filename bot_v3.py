@@ -47,5 +47,25 @@ async def chat(interaction: discord.Interaction, tin_nhan: str):
 async def toan(interaction: discord.Interaction, bieu_thuc: str):
     await interaction.response.defer()
     try:
-        expr = bieu_thuc.replace("^", "**").replace("x", "*").strip()
-        kq =
+        expr = bieu_thuc.replace("^", "**").replace("x", "*").replace("X", "*").strip()
+        if not expr:
+            await interaction.followup.send("❌ Nhập biểu thức đi Sen! VD: `/toan 2+2*3`")
+            return
+        # Chặn ký tự lạ gây SyntaxError
+        allowed_chars = set("0123456789+-*/().% **sincosqrtmathe,")
+        if any(c not in "0123456789+-*/().%* " and c not in "sincosqrtmathe" for c in expr.lower()):
+            # Cho qua, để AI xử lý nếu phức tạp
+            pass
+        kq = eval(expr, {"__builtins__": {}}, {"math": math, "sqrt": math.sqrt, "sin": math.sin, "cos": math.cos, "tan": math.tan})
+        await interaction.followup.send(f"**{bieu_thuc} = {kq}**")
+    except SyntaxError:
+        try:
+            uid = str(interaction.user.id)
+            if uid not in user_chats:
+                user_chats[uid] = model.start_chat(history=[])
+            resp = user_chats[uid].send_message(f"Giải toán: {bieu_thuc}, chỉ trả lời kết quả ngắn gọn")
+            await interaction.followup.send(f"**{bieu_thuc} = {resp.text[:500]}** (AI giải)")
+        except Exception as e2:
+            await interaction.followup.send(f"❌ Biểu thức `{bieu_thuc}` sai cú pháp rồi Sen ơi!")
+    except Exception as e:
+        await interaction.followup.send(f"
