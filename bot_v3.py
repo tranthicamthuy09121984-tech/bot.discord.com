@@ -1,26 +1,26 @@
-import os, math, urllib.parse
-from keep_alive import keep_alive
+import os
+from threading import Thread
 import discord
 from discord.ext import commands
-from google import genai
-import aiohttp
 from flask import Flask
-from threading import Thread
+from google import genai
 
 # --- KEEP ALIVE CHUAN CHO RENDER ---
 app = Flask('')
 @app.route('/')
 def home():
-    return "**Meo iuu** đang online!"
+    return "Meo meo maoooo!! Bot UP - https://bot-o-day-ubajnznma.onrender.com"
 
 def run():
-    app.run(host='0.0.0.0', port=8080)
+    port = int(os.environ.get("PORT", 10000)) # QUAN TRONG: Phai dung PORT cua Render
+    app.run(host='0.0.0.0', port=port)
 
 def keep_alive():
     t = Thread(target=run)
+    t.daemon = True
     t.start()
 
-# --- GEMINI MOI ---
+# --- GEMINI ---
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 user_chats = {}
 
@@ -58,14 +58,4 @@ async def ping(interaction: discord.Interaction):
 
 @bot.tree.command(name="reset", description="Reset chat")
 async def reset(interaction: discord.Interaction):
-    uid = str(interaction.user.id)
-    if uid in user_chats:
-        del user_chats[uid]
-    await interaction.response.send_message("Đã reset! 🔄")
-
-@bot.tree.command(name="help", description="Huớng dẫn")
-async def help_cmd(interaction: discord.Interaction):
-    await interaction.response.send_message("/chat /ping /reset")
-
-keep_alive()
-bot.run(os.getenv("DISCORD_TOKEN"))
+   
