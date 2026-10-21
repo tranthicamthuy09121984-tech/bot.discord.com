@@ -3,8 +3,12 @@ from threading import Thread
 import discord
 from discord.ext import commands
 from flask import Flask
-from google import genai
-
+try:
+    from google import genai
+except ImportError:
+    import google.generativeai as genai
+    # Fix cho lib cũ
+    client = genai
 app = Flask('')
 @app.route('/')
 def home():
@@ -24,7 +28,11 @@ def keep_alive():
     t.daemon = True
     t.start()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+try:
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+except:
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    client = genai
 user_chats = {}
 intents = discord.Intents.default()
 intents.message_content = True
@@ -110,19 +118,6 @@ async def ping_cmd(interaction: discord.Interaction):
 @bot.tree.command(name="reset", description="Reset")
 async def reset_cmd(interaction: discord.Interaction):
     user_chats.pop(str(interaction.user.id), None)
-    await interaction.response.send_message("Da reset!")
-
-@bot.tree.command(name="ban", description="Ban")
-async def ban_cmd(interaction: discord.Interaction, ten: str):
-    await interaction.response.send_message(f"Ban {ten}")
-
-@bot.tree.command(name="quay", description="Quay")
-async def quay_cmd(interaction: discord.Interaction):
-    await interaction.response.send_message("Trung MP40 Mang Xa!")
-
-@bot.tree.command(name="chon_che_do", description="Chon che do")
-async def chon_che_do_cmd(interaction: discord.Interaction, che_do: str):
-    await interaction.response.send_message(f"Da chon {che_do}")
-
+    await interaction.response.send_message("Đã reset!")
 keep_alive()
 bot.run(os.getenv("DISCORD_TOKEN"))
