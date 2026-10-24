@@ -66,8 +66,7 @@ def home():
 
 # Chạy web server cho UptimeRobot ping
 threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000)).start()
-    
-    await interaction.response.defer()
+await interaction.response.defer()
     
     phut = thoi_gian
     dang_nghi = True
