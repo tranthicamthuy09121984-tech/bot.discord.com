@@ -94,7 +94,7 @@ async def bot_thuc(interaction: discord.Interaction):
     print(f"[{datetime.now()}] Bot bị bạn gọi dậy!")
 
 # Chạy bot
-client.run("DISCORD_TOKEN")
+client.run("DISCORD_TOKEN")  # <-- Đây là chữ, không phải biến!
 
 class Bot(commands.Bot):
     def __init__(self):
