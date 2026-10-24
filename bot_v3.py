@@ -7,7 +7,7 @@ from google import genai
 
 app = Flask('')
 @app.route('/')
-def home(): return "Bot 4850 Full 9 Lenh - Online"
+def home(): return "阮福源 bot Full 9 Lệnh - Online"
 def run_flask(): app.run(host='0.0.0.0', port=8080)
 Thread(target=run_flask, daemon=True).start()
 
@@ -23,15 +23,31 @@ async def on_ready():
     print(f"Bot {bot.user} da online!")
     await bot.tree.sync()
 
-@bot.tree.command(name="stats", description="Xem stats giong Carl-bot")
-async def stats(interaction: discord.Interaction):
-    embed = discord.Embed(title="Nguyễn Phúc Nguyên bot", color=0x0078D4)
-    embed.add_field(name="Servers", value=str(len(bot.guilds)))
-    embed.add_field(name="Members", value=str(len(bot.users)))
-    embed.add_field(name="RAM", value=f"{psutil.Process().memory_info().rss/1024/1024:.2f} MiB")
-    embed.add_field(name="Uptime", value=f"{(time.time()-start_time)/3600:.1f}h")
+@bot.tree.command(name="about", description="Giong Carl-bot tieng Viet")
+async def about(interaction: discord.Interaction):
+    ram = psutil.Process().memory_info().rss / 1024 / 1024
+    cpu = psutil.Process().cpu_percent(interval=0.1)
+    uptime_sec = int(time.time() - start_time)
+    h, m, s = uptime_sec//3600, (uptime_sec%3600)//60, uptime_sec%60
+
+    embed = discord.Embed(
+        title="阮福源 bot",
+        description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882) Nhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẫn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẫn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!! Đừng quên, chúng tôi còn làm thêm bot đầy đủ code như Nguyez FF (Nguyez FF™ #7665) làm Discord thành một tựa games vui nhất Việt Nam, đó chính là Free Fire một tựa games sinh tồn và sống sót phổ biến hàng đầu thế giới, Meo của sen (Meo của Sen #0591) cảm nhận đang làm chủ một con mèo. Tiến trình thì khó đến được thành công, nhưng bạn chỉ thấy nó có vài dòng dễ,..",
+        color=0x0078D4
+    )
+
+    embed.add_field(name="Thành viên", value=f"{len(bot.users):,} tổng\n{len(bot.users):,} duy nhất", inline=True)
+    embed.add_field(name="Kênh", value=f"0 tổng\n0 văn bản\n0 thoại", inline=True)
+    embed.add_field(name="Tiến trình", value=f"{ram:.2f} MiB\n{cpu:.2f}% CPU", inline=True)
+
+    embed.add_field(name="Máy chủ", value=f"{len(bot.guilds)}\n{bot.shard_count or 1} shards", inline=True)
+    embed.add_field(name="Tin nhắn đã thấy", value=f"0 tin nhắn\n(-0.0/s)", inline=True)
+    embed.add_field(name="Thời gian hoạt động", value=f"{h}h {m}p {s}g", inline=True)
+
+    embed.set_footer(text="Được tạo bằng Pythonn 💝 Ngôn ngữ lập trình dễ nhất hiện nay")
+
     try:
-        file = discord.File("python_trang_xanh.png", filename="python.png")
+        file = discord.File("python.png", filename="python.png")
         embed.set_thumbnail(url="attachment://python.png")
         await interaction.response.send_message(embed=embed, file=file)
     except:
@@ -41,7 +57,7 @@ async def stats(interaction: discord.Interaction):
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(bot.latency*1000)}ms")
 
-@bot.tree.command(name="help", description="Xem tat ca lenh")
+@bot.tree.command(name="help", description="Xem tất cả lệnh")
 async def help_cmd(interaction: discord.Interaction):
     msg = """**📜 DANH SÁCH LỆNH BOT 4850**
 `/ping` - Test bot
@@ -83,17 +99,17 @@ async def giftcode(interaction: discord.Interaction):
     giftcodes.append(code)
     await interaction.response.send_message(f"🎁 Giftcode: `{code}`")
 
-@bot.tree.command(name="reset", description="Reset giftcode")
+@bot.tree.command(name="reset", description="Reset")
 async def reset(interaction: discord.Interaction):
-    giftcodes.clear(); await interaction.response.send_message("Đã reset hết giftcode!")
+    giftcodes.clear(); await interaction.response.send_message("Đã reset🧹")
 
-@bot.tree.command(name="bot_thuc", description="Danh thuc bot")
+@bot.tree.command(name="bot_thuc", description="Đánh thức bot")
 async def bot_thuc(interaction: discord.Interaction):
-    await interaction.response.send_message("Dậy rồi Sen ơi! Meo tỉnh rồi đây! 😼☕")
+    await interaction.response.send_message("Dậy rồi bạn ơi! Mình tỉnh rồi đây! 😼☕")
 
-@bot.tree.command(name="nghi_ngoi", description="Cho bot nghi")
+@bot.tree.command(name="nghi_ngoi", description="Cho bot nghỉ")
 async def nghi_ngoi(interaction: discord.Interaction):
-    await interaction.response.send_message("Meo đi ngủ đây... Zzz... 😴")
+    await interaction.response.send_message("Mình đi ngủ đây... Zzz... 😴")
     await asyncio.sleep(2)
     await interaction.followup.send("...Ngủ 5s thôi, dậy lại rồi! 😹")
 
@@ -105,4 +121,7 @@ async def chat(interaction: discord.Interaction, message: str):
         await interaction.followup.send(res.text[:2000])
     except Exception as e: await interaction.followup.send(f"Lỗi: {e}")
 
+@bot.tree.command(name="u", description="ú òa")
+async def u(interaction: discord.Interaction):
+    await interaction.response.send_message("Òaaa, bạn hú hồn chưa nè.")
 bot.run(os.getenv("DISCORD_TOKEN"))
