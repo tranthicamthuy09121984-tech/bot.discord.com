@@ -6,6 +6,9 @@ from flask import Flask
 from discord import app_commands
 import asyncio
 from datetime import datetime
+
+# Chạy web server cho UptimeRobot ping
+threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000)).start()
 try:
     from google import genai
 except ImportError:
@@ -52,10 +55,17 @@ async def on_ready():
     print(f"BOT 阮福阮 #4850 ĐÃ ONLINE!! 💥 {client.user}")
 
 # LỆNH 1: /nghi_ngoi
-@tree.command(name="nghi_ngoi", description="Cho bot nghỉ ngơi một chút")
-@app_commands.describe(thoi_gian="Thời gian nghỉ (phút)")
-async def nghi_ngoi(interaction: discord.Interaction, thoi_gian: float):
-    global dang_nghi, task_nghi
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    global dang_nghi
+    if dang_nghi:
+        return "Bot đang nghỉ ngơi 😴", 503 # Báo 503 cho UptimeRobot biết là đang nghỉ
+    return "Bot 阮福阮 #4850 ONLINE 💥", 200
+
+# Chạy web server cho UptimeRobot ping
+threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000)).start()
     
     await interaction.response.defer()
     
