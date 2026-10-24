@@ -116,4 +116,7 @@ async def ptb2(interaction: discord.Interaction, a: float, b: float, c: float):
 @bot.tree.command(name="toan", description="Tính toán")
 async def toan(interaction: discord.Interaction, bieu_thuc: str):
     try:
-        kq = eval(bieu_thuc, {"__builtins__": {}},
+        kq = eval(bieu_thuc)
+        await interaction.response.send_message(f"{bieu_thuc} = {kq}")
+    except Exception as e:
+        await interaction.response.send_message(f"Lỗi: {e}")
