@@ -3,6 +3,9 @@ from threading import Thread
 import discord
 from discord.ext import commands
 from flask import Flask
+from discord import app_commands
+import asyncio
+from datetime import datetime
 try:
     from google import genai
 except ImportError:
@@ -36,6 +39,62 @@ except:
 user_chats = {}
 intents = discord.Intents.default()
 intents.message_content = True
+
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
+
+dang_nghi = False
+task_nghi = None
+
+@client.event
+async def on_ready():
+    await tree.sync()
+    print(f"BOT 阮福阮 #4850 ĐÃ ONLINE!! 💥 {client.user}")
+
+# LỆNH 1: /nghi_ngoi
+@tree.command(name="nghi_ngoi", description="Cho bot nghỉ ngơi một chút")
+@app_commands.describe(thoi_gian="Thời gian nghỉ (phút)")
+async def nghi_ngoi(interaction: discord.Interaction, thoi_gian: float):
+    global dang_nghi, task_nghi
+    
+    await interaction.response.defer()
+    
+    phut = thoi_gian
+    dang_nghi = True
+    
+    # Nhắn khi bắt đầu nghỉ
+    await interaction.followup.send(f"....... Hoạt động sau {phut} phút nữa 😴")
+    print(f"[{datetime.now()}] Bot đi nghỉ {phut} phút")
+
+    # Tạo task chờ hết giờ nghỉ
+    async def cho_nghi_xong():
+        global dang_nghi
+        await asyncio.sleep(phut * 60)
+        if dang_nghi: # Nếu chưa bị gọi dậy sớm
+            dang_nghi = False
+            await interaction.channel.send(f"阮福阮 #4850 đã dậy! Sẵn sàng cân tất!! 💥")
+
+    task_nghi = asyncio.create_task(cho_nghi_xong())
+
+# LỆNH 2: /bot_thuc
+@tree.command(name="bot_thuc", description="Đánh thức bot dậy")
+async def bot_thuc(interaction: discord.Interaction):
+    global dang_nghi, task_nghi
+    
+    if not dang_nghi:
+        await interaction.response.send_message("Bot đang thức mà Sen ơi! 😹")
+        return
+
+    # Hủy task nghỉ nếu đang chờ
+    if task_nghi:
+        task_nghi.cancel()
+    
+    dang_nghi = False
+    await interaction.response.send_message("Đã bỏ thời gian nghỉ ngơi, bắt đầu lại nào! 💥🔥")
+    print(f"[{datetime.now()}] Bot bị bạn gọi dậy!")
+
+# Chạy bot
+client.run("DISCORD_TOKEN")
 
 class Bot(commands.Bot):
     def __init__(self):
