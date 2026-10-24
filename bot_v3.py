@@ -4,6 +4,13 @@ from discord.ext import commands
 from flask import Flask
 from threading import Thread
 from google import genai
+import time
+while True:
+    try:
+        bot.run(os.getenv("DISCORD_TOKEN"))
+    except Exception as e:
+        print(f"Bot crash: {e}, tu dong chay lai sau 5s...")
+        time.sleep(5)
 
 app = Flask('')
 @app.route('/')
