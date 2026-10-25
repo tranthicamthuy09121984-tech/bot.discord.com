@@ -36,8 +36,8 @@ async def about(interaction: discord.Interaction):
     cpu = psutil.Process().cpu_percent(interval=0.1)
     uptime_sec = int(time.time() - start_time)
     h, m, s = uptime_sec // 3600, (uptime_sec % 3600) // 60, uptime_sec % 60
-    sen = "<:sen:1563910482862284820>"
-    python = "<:python:1563897223287148564>"
+    sen = "<:sen:1563912637098762271>"
+    python = "<:python:1563912312518213702>"
     embed = discord.Embed(
         title="阮福源 bot",
         description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882) Nhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẫn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẫn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!! Đừng quên, chúng tôi còn làm thêm bot đầy đủ code như Nguyez FF (Nguyez FF™ #7665) làm Discord thành một tựa games vui nhất Việt Nam, đó chính là Free Fire một tựa games sinh tồn và sống sót phổ biến hàng đầu thế giới, Meo của sen (Meo của Sen #0591) cảm nhận đang làm chủ một con mèo, Spotify Bot (Spotify Bot#7824) cảm nhận nhạc với ứng dụng Windown Media Player, Nhạc Của Tui, Zing MP3 và Youtube Music. Tiến trình thì khó đến được thành công, nhưng bạn chỉ thấy nó có vài dòng dễ,..",
