@@ -7,9 +7,16 @@ from google import genai
 
 app = Flask('')
 @app.route('/')
-def home(): return "阮福源 bot Full 9 Lệnh - Online"
-def run_flask(): app.run(host='0.0.0.0', port=8080)
+def home():
+    return "阮福源 bot Full 9 Lệnh - Online"
+
+def run_flask():
+    # QUAN TRỌNG: Dùng PORT của Render, không fix 8080
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
 Thread(target=run_flask, daemon=True).start()
+# bot.run(os.getenv("DISCORD_TOKEN"))
 
 start_time = time.time()
 gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -23,16 +30,18 @@ async def on_ready():
     print(f"Bot {bot.user} da online!")
     await bot.tree.sync()
 
-@bot.tree.command(name="about", description="Giong Carl-bot tieng Viet")
+@bot.tree.command(name="about", description="Giới thiệu về chúng tôi")
 async def about(interaction: discord.Interaction):
     ram = psutil.Process().memory_info().rss / 1024 / 1024
     cpu = psutil.Process().cpu_percent(interval=0.1)
     uptime_sec = int(time.time() - start_time)
     h, m, s = uptime_sec//3600, (uptime_sec%3600)//60, uptime_sec%60
 
+sen = ":sen:"
+    embed.set_footer(text=f"{sen} Người tạo
     embed = discord.Embed(
         title="阮福源 bot",
-        description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882) Nhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẫn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẫn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!! Đừng quên, chúng tôi còn làm thêm bot đầy đủ code như Nguyez FF (Nguyez FF™ #7665) làm Discord thành một tựa games vui nhất Việt Nam, đó chính là Free Fire một tựa games sinh tồn và sống sót phổ biến hàng đầu thế giới, Meo của sen (Meo của Sen #0591) cảm nhận đang làm chủ một con mèo. Tiến trình thì khó đến được thành công, nhưng bạn chỉ thấy nó có vài dòng dễ,..",
+        description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882) Nhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẫn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẫn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!! Đừng quên, chúng tôi còn làm thêm bot đầy đủ code như Nguyez FF (Nguyez FF™ #7665) làm Discord thành một tựa games vui nhất Việt Nam, đó chính là Free Fire một tựa games sinh tồn và sống sót phổ biến hàng đầu thế giới, Meo của sen (Meo của Sen #0591) cảm nhận đang làm chủ một con mèo, Spotify Bot (Spotify Bot#7824) cảm nhận nhạc với ứng dụng Windown Media Player, Nhạc Của Tui, Zing MP3 và Youtube Music. Tiến trình thì khó đến được thành công, nhưng bạn chỉ thấy nó có vài dòng dễ,..",
         color=0x0078D4
     )
 
@@ -43,15 +52,8 @@ async def about(interaction: discord.Interaction):
     embed.add_field(name="Máy chủ", value=f"{len(bot.guilds)}\n{bot.shard_count or 1} shards", inline=True)
     embed.add_field(name="Tin nhắn đã thấy", value=f"0 tin nhắn\n(-0.0/s)", inline=True)
     embed.add_field(name="Thời gian hoạt động", value=f"{h}h {m}p {s}g", inline=True)
-
-    embed.set_footer(text="Được tạo bằng Pythonn 💝 Ngôn ngữ lập trình dễ nhất hiện nay")
-
-    try:
-        file = discord.File("python.png", filename="python.png")
-        embed.set_thumbnail(url="attachment://python.png")
-        await interaction.response.send_message(embed=embed, file=file)
-    except:
-        await interaction.response.send_message(embed=embed)
+emoji = ":python:"
+embed.set_footer(text=f"{emoji} Được tạo bằng Pythonn 💝")
 
 @bot.tree.command(name="ping", description="Test bot")
 async def ping(interaction: discord.Interaction):
@@ -61,7 +63,7 @@ async def ping(interaction: discord.Interaction):
 async def help_cmd(interaction: discord.Interaction):
     msg = """**📜 DANH SÁCH LỆNH BOT 4850**
 `/ping` - Test bot
-`/stats` - Xem stats
+`/about` - Xem về chúng tôi
 `/weather <tỉnh>` - Xem thời tiết
 `/msn` - Mở MSN
 `/toan <biểu thức>` - Tính toán
