@@ -6,13 +6,17 @@ from threading import Thread
 from google import genai
 
 app = Flask('')
+
 @app.route('/')
 def home():
-    return "阮福源 bot Full 9 Lệnh - Online"
+    return "Bot của Sen đang thức! Hi Sennn"
 
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+def run():
+  app.run(host='0.0.0.0',port=10000)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
 
 Thread(target=run_flask, daemon=True).start()
 
@@ -142,6 +146,7 @@ async def chat(interaction: discord.Interaction, message: str):
 async def u(interaction: discord.Interaction):
     await interaction.response.send_message("Òaaa, bạn hú hồn chưa nè.")
 
+@bot.tree.command(name="goiplus", description="Gói thuê bao, trải nghiệm đặc quyền"
 embed = discord.Embed(
     title="Gói thuê bao",
     description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này.Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
@@ -159,4 +164,5 @@ embed.add_field(name="VVIP 8 - 800.000 / 1 năm", value="Cố lên, tôi ở đ�
 embed.add_field(name="VVIP 9 - 900.000 / 1 năm", value="Gần max level rồi!", inline=True)
 embed.add_field(name="VVIP 10 - 1.000.000 / 1 năm", value="Bá chủ Sever này..?!", inline=True)
 
+keep_alive()
 bot.run(os.getenv("DISCORD_TOKEN"))
