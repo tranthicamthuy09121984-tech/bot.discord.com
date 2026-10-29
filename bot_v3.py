@@ -146,7 +146,7 @@ async def chat(interaction: discord.Interaction, message: str):
 async def u(interaction: discord.Interaction):
     await interaction.response.send_message("Òaaa, bạn hú hồn chưa nè.")
 
-@bot.tree.command(name="goiplus", description="Gói thuê bao, trải nghiệm đặc quyền"
+@bot.tree.command(name="goiplus", description="Gói thuê bao, trải nghiệm đặc quyền")
 embed = discord.Embed(
     title="Gói thuê bao",
     description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này.Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
