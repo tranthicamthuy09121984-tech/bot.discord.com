@@ -39,12 +39,15 @@ async def about(interaction: discord.Interaction):
     sen = "<:sen:1563912637098762271>"
     python = "<:python:1563912312518213702>"
     embed = discord.Embed(
-      title=f"{sen} Người tạo", description=" ")
+      text=f"{sen} Người tạo", description=" ")
       title="阮福源 bot",
         description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882) Nhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẫn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẫn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!! Đừng quên, chúng tôi còn làm thêm bot đầy đủ code như Nguyez FF (Nguyez FF™ #7665) làm Discord thành một tựa games vui nhất Việt Nam, đó chính là Free Fire một tựa games sinh tồn và sống sót phổ biến hàng đầu thế giới, Meo của sen (Meo của Sen #0591) cảm nhận đang làm chủ một con mèo, Spotify Bot (Spotify Bot#7824) cảm nhận nhạc với ứng dụng Windown Media Player, Nhạc Của Tui, Zing MP3 và Youtube Music. Tiến trình thì khó đến được thành công, nhưng bạn chỉ thấy nó có vài dòng dễ,..",
         color=0x0078D4
     )
-    embed.set_author(name=f"{sen} Người tạo")
+embed.set_author(
+    name="phucnguyend_28882",
+    icon_url="https://cdn.discordapp.com/emojis/1563912637098762271.png?size=128&quality=lossless"
+)
     embed.add_field(name="Thành viên", value=f"{len(bot.users):,} tổng\n{len(bot.users):,} duy nhất", inline=True)
     embed.add_field(name="Kênh", value=f"0 tổng\n0 văn bản\n0 thoại", inline=True)
     embed.add_field(name="Tiến trình", value=f"{ram:.2f} MiB\n{cpu:.2f}% CPU", inline=True)
@@ -133,5 +136,22 @@ async def chat(interaction: discord.Interaction, message: str):
 @bot.tree.command(name="u", description="ú òa")
 async def u(interaction: discord.Interaction):
     await interaction.response.send_message("Òaaa, bạn hú hồn chưa nè.")
+
+embed = discord.Embed(
+    title="Gói thuê bao",
+    description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này.Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
+    color=0xFFD700
+)
+
+embed.add_field(name="VVIP 1 - 100.000 / 1 năm", value="Trải nghiệm những cốt truyện mới và có lệnh cho VVIP 1.Có cảm giác sắp đến 1 cốt truyện từ những ngọn lá nhỏ...", inline=True)
+embed.add_field(name="VVIP 2 - 200.000 / 1 năm", value="Thêm lệnh và ưu tiên hơn VVIP 1", inline=True)
+embed.add_field(name="VVIP 3 - 300.000 / 1 năm", value="Trải nghiệm đặc nhiệm VVIP 3 nào!", inline=True)
+embed.add_field(name="VVIP 4 - 400.000 / 1 năm", value="Đã tiến lên một tầm cao mới", inline=True)
+embed.add_field(name="VVIP 5 - 500.000 / 1 năm", value="Đã cân bằng VVIP rồi bạn ơii", inline=True)
+embed.add_field(name="VVIP 6 - 600.000 / 1 năm", value="Cố gắng thêm 4 bước nữa nào!", inline=True)
+embed.add_field(name="VVIP 7 - 700.000 / 1 năm", value="Thêm nữa được không nào, bạn sẽ lên được!", inline=True)
+embed.add_field(name="VVIP 8 - 800.000 / 1 năm", value="Cố lên, tôi ở đây!", inline=True)
+embed.add_field(name="VVIP 9 - 900.000 / 1 năm", value="Gần max level rồi!", inline=True)
+embed.add_field(name="VVIP 10 - 1.000.000 / 1 năm", value="Bá chủ Sever này..?!", inline=True)
 
 bot.run(os.getenv("DISCORD_TOKEN"))
