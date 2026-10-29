@@ -147,12 +147,13 @@ async def u(interaction: discord.Interaction):
     await interaction.response.send_message("Òaaa, bạn hú hồn chưa nè.")
 
 @bot.tree.command(name="goiplus", description="Gói thuê bao, trải nghiệm đặc quyền")
-embed = discord.Embed(
-    title="Gói thuê bao",
-    description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này.Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
-    color=0xFFD700
-)
-
+async def goiplus(interaction: discord.Interaction):
+    embed = discord.Embed(
+        title="Gói thuê bao",
+        description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này.Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
+        color=0xFFD700
+    )
+    await interaction.response.send_message(embed=embed)
 embed.add_field(name="VVIP 1 - 100.000 / 1 năm", value="Trải nghiệm những cốt truyện mới và có lệnh cho VVIP 1.Có cảm giác sắp đến 1 cốt truyện từ những ngọn lá nhỏ...", inline=True)
 embed.add_field(name="VVIP 2 - 200.000 / 1 năm", value="Thêm lệnh và ưu tiên hơn VVIP 1", inline=True)
 embed.add_field(name="VVIP 3 - 300.000 / 1 năm", value="Trải nghiệm đặc nhiệm VVIP 3 nào!", inline=True)
