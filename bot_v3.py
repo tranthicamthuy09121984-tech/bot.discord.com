@@ -12,13 +12,11 @@ def home():
     return "Bot của Sen đang thức! Hi Sennn"
 
 def run():
-  app.run(host='0.0.0.0',port=10000)
+    app.run(host='0.0.0.0', port=10000)
 
 def keep_alive():
-    t = Thread(target=run)
+    t = Thread(target=run, daemon=True)
     t.start()
-
-Thread(target=run_flask, daemon=True).start()
 
 start_time = time.time()
 gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -26,7 +24,6 @@ gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="/", intents=intents)
-
 giftcodes = []
 
 @bot.event
@@ -41,32 +38,20 @@ async def about(interaction: discord.Interaction):
     uptime_sec = int(time.time() - start_time)
     h, m, s = uptime_sec // 3600, (uptime_sec % 3600) // 60, uptime_sec % 60
     
-    sen = "<:sen:1563912637098762271>"
-    python = "<:python:1563912312518213702>"
-
     embed = discord.Embed(
-        description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882)\n\nNhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẵn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẵn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!!\n\nĐừng quên, chúng tôi còn làm thêm bot đầy đủ code như Nguyez FF (Nguyez FF™ #7665) làm Discord thành một tựa games vui nhất Việt Nam, đó chính là Free Fire một tựa games sinh tồn và sống sót phổ biến hàng đầu thế giới, Meo của sen (Meo của Sen #0591) cảm nhận đang làm chủ một con mèo, Spotify Bot (Spotify Bot#7824) cảm nhận nhạc với ứng dụng Window Media Player, Nhạc Của Tui, Zing MP3 và Youtube Music. Tiến trình thì khó đến được thành công, nhưng bạn chỉ thấy nó có vài dòng dễ,..",
+        description="阮福源 bot làm được tất cả như code, lập trình, kick, chào người mới,... Tôi được chế tạo từng mảnh bởi Phúc Nguyên★დ (phucnguyend_28882)\n\nNhà tài trợ : Meta AI & Gemini 1.5 flash. Tôi sẵn sàng làm tất cả và 24/7 bởi UptimeRobot & Render bắt đầu từ năm 2024, bạn đã sẵn sàng bước vào thế giới mới? Nếu có vui chơi ngay hôm nayy!!",
         color=0x0078D4
     )
-    
     embed.set_author(
-        name="phucnguyend_28882",
+        name="phucnguyend_28882", 
         icon_url="https://cdn.discordapp.com/emojis/1563912637098762271.png?size=128&quality=lossless"
     )
-
-    embed.add_field(name="Thành viên", value=f"{len(bot.users):,} tổng\n{len(bot.users):,} duy nhất", inline=True)
-    embed.add_field(name="Kênh", value=f"0 tổng\n0 văn bản\n0 thoại", inline=True)
+    embed.add_field(name="Thành viên", value=f"{len(bot.users):,} tổng", inline=True)
+    embed.add_field(name="Kênh", value=f"{len(bot.guilds)} server", inline=True)
     embed.add_field(name="Tiến trình", value=f"{ram:.2f} MiB\n{cpu:.2f}% CPU", inline=True)
-    embed.add_field(name="Máy chủ", value=f"{len(bot.guilds)}\n{bot.shard_count or 1} shards", inline=True)
-    embed.add_field(name="Tin nhắn đã thấy", value=f"0 tin nhắn\n(-0.0/s)", inline=True)
     embed.add_field(name="Thời gian hoạt động", value=f"{h}h {m}p {s}g", inline=True)
-    
-    embed.set_footer(
-        name="Được tạo bằng Python 💝")
-        icon_url="https://cdn.discordapp.com/emojis/1563912312518213702.png?size=128&quality=lossless"
-
+    embed.set_footer(text="Được tạo bằng Python 💝", icon_url="https://cdn.discordapp.com/emojis/1563912312518213702.png?size=128&quality=lossless")
     await interaction.response.send_message(embed=embed)
-
 
 @bot.tree.command(name="ping", description="Test bot")
 async def ping(interaction: discord.Interaction):
@@ -99,13 +84,17 @@ async def weather(interaction: discord.Interaction, tinh: str):
 @bot.tree.command(name="toan", description="Tính toán")
 async def toan(interaction: discord.Interaction, bieu_thuc: str):
     try:
-        kq = eval(bieu_thuc)
+        # Cho phép toán học an toàn
+        kq = eval(bieu_thuc, {"__builtins__": {}}, {"math": math})
         await interaction.response.send_message(f"`{bieu_thuc} = {kq}`")
     except Exception as e:
         await interaction.response.send_message(f"Lỗi: {e}")
 
 @bot.tree.command(name="ptb2", description="Giải PT bậc 2")
 async def ptb2(interaction: discord.Interaction, a: float, b: float, c: float):
+    if a == 0:
+        await interaction.response.send_message("a phải khác 0!")
+        return
     d = b * b - 4 * a * c
     if d < 0:
         await interaction.response.send_message(f"PT {a}x²+{b}x+{c}=0 vô nghiệm Δ={d}")
@@ -152,20 +141,20 @@ async def u(interaction: discord.Interaction):
 async def goiplus(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Gói thuê bao",
-        description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này.Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
+        description="Gói thuê bao để trải nghiệm các đặc nhiệm bổ ích khác sau này. Mua gói sẽ được ưu tiên và trải nghiệm đặc nhiệm VVIP của Meo!",
         color=0xFFD700
     )
+    embed.add_field(name="VVIP 1 - 100.000 / 1 năm", value="Trải nghiệm những cốt truyện mới...", inline=True)
+    embed.add_field(name="VVIP 2 - 200.000 / 1 năm", value="Thêm lệnh và ưu tiên hơn VVIP 1", inline=True)
+    embed.add_field(name="VVIP 3 - 300.000 / 1 năm", value="Trải nghiệm đặc nhiệm VVIP 3 nào!", inline=True)
+    embed.add_field(name="VVIP 4 - 400.000 / 1 năm", value="Đã tiến lên một tầm cao mới", inline=True)
+    embed.add_field(name="VVIP 5 - 500.000 / 1 năm", value="Đã cân bằng VVIP rồi bạn ơii", inline=True)
+    embed.add_field(name="VVIP 6 - 600.000 / 1 năm", value="Cố gắng thêm 4 bước nữa nào!", inline=True)
+    embed.add_field(name="VVIP 7 - 700.000 / 1 năm", value="Thêm nữa được không nào!", inline=True)
+    embed.add_field(name="VVIP 8 - 800.000 / 1 năm", value="Cố lên, tôi ở đây!", inline=True)
+    embed.add_field(name="VVIP 9 - 900.000 / 1 năm", value="Gần max level rồi!", inline=True)
+    embed.add_field(name="VVIP 10 - 1.000.000 / 1 năm", value="Bá chủ Sever này..?!", inline=True)
     await interaction.response.send_message(embed=embed)
-embed.add_field(name="VVIP 1 - 100.000 / 1 năm", value="Trải nghiệm những cốt truyện mới và có lệnh cho VVIP 1.Có cảm giác sắp đến 1 cốt truyện từ những ngọn lá nhỏ...", inline=True)
-embed.add_field(name="VVIP 2 - 200.000 / 1 năm", value="Thêm lệnh và ưu tiên hơn VVIP 1", inline=True)
-embed.add_field(name="VVIP 3 - 300.000 / 1 năm", value="Trải nghiệm đặc nhiệm VVIP 3 nào!", inline=True)
-embed.add_field(name="VVIP 4 - 400.000 / 1 năm", value="Đã tiến lên một tầm cao mới", inline=True)
-embed.add_field(name="VVIP 5 - 500.000 / 1 năm", value="Đã cân bằng VVIP rồi bạn ơii", inline=True)
-embed.add_field(name="VVIP 6 - 600.000 / 1 năm", value="Cố gắng thêm 4 bước nữa nào!", inline=True)
-embed.add_field(name="VVIP 7 - 700.000 / 1 năm", value="Thêm nữa được không nào, bạn sẽ lên được!", inline=True)
-embed.add_field(name="VVIP 8 - 800.000 / 1 năm", value="Cố lên, tôi ở đây!", inline=True)
-embed.add_field(name="VVIP 9 - 900.000 / 1 năm", value="Gần max level rồi!", inline=True)
-embed.add_field(name="VVIP 10 - 1.000.000 / 1 năm", value="Bá chủ Sever này..?!", inline=True)
 
 keep_alive()
 bot.run(os.getenv("DISCORD_TOKEN"))
