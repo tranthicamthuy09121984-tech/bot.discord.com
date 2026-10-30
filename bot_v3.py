@@ -61,7 +61,9 @@ async def about(interaction: discord.Interaction):
     embed.add_field(name="Tin nhắn đã thấy", value=f"0 tin nhắn\n(-0.0/s)", inline=True)
     embed.add_field(name="Thời gian hoạt động", value=f"{h}h {m}p {s}g", inline=True)
     
-    embed.set_footer(text=f"{python} Được tạo bằng Python 💝")
+    embed.set_footer(
+        name="Được tạo bằng Python 💝")
+        icon_url="https://cdn.discordapp.com/emojis/1563912312518213702.png?size=128&quality=lossless"
 
     await interaction.response.send_message(embed=embed)
 
